@@ -3,7 +3,7 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/navbar/Navbar'
 import LandingPage from './components/pages/Landing'
-import ProblemPage from './components/pages/Problem'
+import ProblemPage from './components/pages/Problems'
 import TrackerPage from './components/pages/Tracker'
 import GoalSetPage from './components/pages/GoalSet'
 
