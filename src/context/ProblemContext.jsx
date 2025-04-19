@@ -3,6 +3,19 @@ import React, {createContext} from "react";
 export const ProblemContext = createContext();
 
 export default function ProblemProvider({ children }) {
+    const [problems, setProblems] = React.useState(()=>{
+        let retrievedProblems = JSON.parse(localStorage.getItem("problems"))
+        return retrievedProblems || []
+    });
+
+    const addProblem = (problem) => {
+        setProblems((prevProblems) => {
+            const updatedProblems = [...prevProblems, problem];
+            localStorage.setItem("problems", JSON.stringify(updatedProblems));
+            return updatedProblems;
+        });
+    }
+
     const randomProblem = [
         {
             id: 1,
@@ -44,7 +57,7 @@ export default function ProblemProvider({ children }) {
 ];
 
     return (
-        <ProblemContext.Provider value={{ randomProblem, numEachSubject }}>
+        <ProblemContext.Provider value={{ randomProblem, numEachSubject, problems, addProblem }}>
             {children}
         </ProblemContext.Provider>
     )
