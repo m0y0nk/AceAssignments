@@ -16,6 +16,16 @@ export default function ProblemProvider({ children }) {
         });
     }
 
+    const groupedByTopic = problems.reduce((acc, problem) => {
+        const topic = problem.topic;
+        if (!acc[topic]) {
+            acc[topic] = [];
+        }
+        acc[topic].push(problem);
+        return acc;
+    }
+    , {});
+
     const randomProblem = [
         {
             id: 1,
@@ -57,7 +67,7 @@ export default function ProblemProvider({ children }) {
 ];
 
     return (
-        <ProblemContext.Provider value={{ randomProblem, numEachSubject, problems, addProblem }}>
+        <ProblemContext.Provider value={{ randomProblem, numEachSubject, problems, addProblem, groupedByTopic }}>
             {children}
         </ProblemContext.Provider>
     )

@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function CalendarComponent() {
     const [value, onChange] = React.useState(new Date());
-    
+
     return (
         <div className="calendar">
         <Calendar
