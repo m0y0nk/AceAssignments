@@ -2,6 +2,11 @@ import React, {createContext} from "react";
 
 export const ProblemContext = createContext();
 
+function getRandomQuestions(arr, count) {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}  
+
 export default function ProblemProvider({ children }) {
     const [problems, setProblems] = React.useState(()=>{
         let retrievedProblems = JSON.parse(localStorage.getItem("problems"))
@@ -26,48 +31,28 @@ export default function ProblemProvider({ children }) {
     }
     , {});
 
-    const randomProblem = [
-        {
-            id: 1,
-            name: "Problem 1",
-            topic: "Topic 1"
-        },
-        {
-            id: 2,
-            name: "Problem 2",
-            topic: "Topic 2"
-        },
-        {
-            id: 3,
-            name: "Problem 3",
-            topic: "Topic 3"
-        }
-    ];
+    const numQuestionsPerTopic = Object.keys(groupedByTopic).reduce((acc, topic) => {
+        acc[topic] = groupedByTopic[topic].length;
+        return acc;
+    }, {});
 
-    const numEachSubject = [{
-        subject: "Math",
-        num: 10
-    },
-    {
-        subject: "Science",
-        num: 5
-    },
-    {
-        subject: "English",
-        num: 8
-    },
-    {
-        subject: "History",
-        num: 6
-    },
-    {
-        subject: "Geography",
-        num: 7
-    }
-];
+    const [randomProblem, setRandomProblem] = React.useState([]);
+
+    React.useEffect(() => {
+        const randomQuestions = getRandomQuestions(problems, 3);
+        setRandomProblem(randomQuestions);
+    }, []);
+
+    const updateProblem = (index, updatedProblem) => {
+        setProblems((prevProblems) => {
+          const newProblems = [...prevProblems];
+          newProblems[index] = updatedProblem;
+          return newProblems;
+        });
+      };
 
     return (
-        <ProblemContext.Provider value={{ randomProblem, numEachSubject, problems, addProblem, groupedByTopic }}>
+        <ProblemContext.Provider value={{ randomProblem, problems, addProblem, groupedByTopic, numQuestionsPerTopic, updateProblem }}>
             {children}
         </ProblemContext.Provider>
     )

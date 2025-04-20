@@ -117,7 +117,7 @@ export default function GoalSetPage() {
   };
 
   return (
-    <div className="calendar-container">
+    <div className="calendar-container m-4">
       
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Your Schedule</h2>

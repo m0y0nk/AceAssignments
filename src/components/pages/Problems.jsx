@@ -2,9 +2,59 @@ import React, { useContext, useState } from 'react';
 import { ProblemContext } from '../../context/ProblemContext';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { GoogleGenAI } from "@google/genai";
+
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+const ai = new GoogleGenAI({ apiKey: apiKey });
+
+// async function main() {
+  // const response = await ai.models.generateContent({
+  //   model: "gemini-2.0-flash",
+  //   contents: "Explain how AI works in a few words",
+  // });
+//   return response.text;
+// }
+
+// main();
+
+async function getApproach(problem) {
+  try {
+    const prompt = `
+    I need a approach to solve the following problem:
+    
+    Title: ${problem.title}
+    ${problem.subject ? `Subject: ${problem.subject}` : ''}
+    ${problem.difficulty ? `Difficulty: ${problem.difficulty}` : ''}
+    
+    Problem Description:
+    ${problem.description || "No description provided"}
+    
+    Please provide an approach to solve this problem in fewer lines. Include:
+    1. Understanding the problem
+    2. Breaking down the problem
+    3. Thought process for solving
+    4. Advice on avoiding common pitfalls/edge cases
+    5. Any additional tips or resources
+
+    Note: Don't write the code for the solution, just the approach.
+    `;
+
+    const result = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: prompt,
+    });
+
+    const responseText = result.text || "Could not generate an approach for this problem.";
+    return responseText;
+  } catch (error) {
+    console.error("Error generating approach:", error);
+    return "An error occurred while generating the approach. Please try again later.";
+  }
+}
 
 const ProblemPage = () => {
-  const { problems, addProblem } = useContext(ProblemContext);
+  const { problems, addProblem, updateProblem } = useContext(ProblemContext);
 
   const [problem, setProblem] = useState({
     title: '',
@@ -12,8 +62,11 @@ const ProblemPage = () => {
     subject: '',
     difficulty: 'easy',
     url: '',
+    description: '',
     approach: ''
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +84,25 @@ const ProblemPage = () => {
       subject: '',
       difficulty: 'easy',
       url: '',
+      description: '',
       approach: ''
     });
+  };
+
+  const handleGetHelp = async (problemToSolve, index) => {
+    try {
+      setLoading(true);
+      const generatedApproach = await getApproach(problemToSolve);
+      
+      // Update the problem in context with the new approach
+      const updatedProblem = { ...problemToSolve, approach: generatedApproach };
+      updateProblem(index, updatedProblem);
+      
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching approach:', error);
+      setLoading(false);
+    }
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -101,7 +171,16 @@ const ProblemPage = () => {
                         <option value="hard">Hard</option>
                       </select>
                     </div>
-
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea
+                        name="description"
+                        value={problem.description}
+                        onChange={handleInputChange}
+                        placeholder="Describe your problem here..."
+                        className="border border-gray-300 rounded-lg p-3 w-full h-40 resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      />
+                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Approach</label>
                       <textarea
@@ -138,7 +217,6 @@ const ProblemPage = () => {
             Track and organize your coding problems, solutions, and approaches all in one place.
           </p>
 
-          {/* Problems List */}
           <div>
             {problems.length === 0 ? (
               <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl">
@@ -150,17 +228,17 @@ const ProblemPage = () => {
               </div>
             ) : (
               <ul className="space-y-3">
-                {problems.map((problem, index) => (
+                {problems.map((problemItem, index) => (
                   <Dialog.Root key={index}>
                     <Dialog.Trigger asChild>
                       <li className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white cursor-pointer">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-800">{problem.title}</h3>
-                            <p className="text-gray-600 mt-1">Topic: {problem.topic}</p>
+                            <h3 className="text-lg font-semibold text-gray-800">{problemItem.title}</h3>
+                            <p className="text-gray-600 mt-1">Topic: {problemItem.topic}</p>
                           </div>
-                          <span className={`text-xs font-medium px-2.5 py-1 rounded-full capitalize ${getDifficultyColor(problem.difficulty)}`}>
-                            {problem.difficulty}
+                          <span className={`text-xs font-medium px-2.5 py-1 rounded-full capitalize ${getDifficultyColor(problemItem.difficulty)}`}>
+                            {problemItem.difficulty}
                           </span>
                         </div>
                       </li>
@@ -170,9 +248,9 @@ const ProblemPage = () => {
                       <Dialog.Content className="fixed bg-white p-8 rounded-xl shadow-xl z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-start mb-4">
                           <div>
-                            <Dialog.Title className="text-2xl font-bold text-gray-800">{problem.title}</Dialog.Title>
-                            <span className={`mt-2 inline-block text-xs font-medium px-2.5 py-1 rounded-full capitalize ${getDifficultyColor(problem.difficulty)}`}>
-                              {problem.difficulty}
+                            <Dialog.Title className="text-2xl font-bold text-gray-800">{problemItem.title}</Dialog.Title>
+                            <span className={`mt-2 inline-block text-xs font-medium px-2.5 py-1 rounded-full capitalize ${getDifficultyColor(problemItem.difficulty)}`}>
+                              {problemItem.difficulty}
                             </span>
                           </div>
                           <Dialog.Close asChild>
@@ -186,33 +264,61 @@ const ProblemPage = () => {
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <h4 className="text-sm font-medium text-gray-500">Topic</h4>
-                              <p className="text-gray-800 font-medium">{problem.topic}</p>
+                              <p className="text-gray-800 font-medium">{problemItem.topic}</p>
                             </div>
                             <div>
                               <h4 className="text-sm font-medium text-gray-500">Subject</h4>
-                              <p className="text-gray-800 font-medium">{problem.subject}</p>
+                              <p className="text-gray-800 font-medium">{problemItem.subject}</p>
                             </div>
                           </div>
                         </div>
+                        
+                        {problemItem.description && (
+                          <div className="mb-6">
+                            <h4 className="text-sm font-medium text-gray-500 mb-2">Description</h4>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                              <p className="text-gray-800 whitespace-pre-line">{problemItem.description}</p>
+                            </div>
+                          </div>
+                        )}
                         
                         <div className="mb-6">
                           <h4 className="text-sm font-medium text-gray-500 mb-2">Approach</h4>
                           <div className="bg-gray-50 p-4 rounded-lg">
-                            <p className="text-gray-800 whitespace-pre-line">{problem.approach}</p>
+                            {loading ? (
+                              <div className="flex items-center justify-center py-4">
+                                <svg className="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span className="ml-2">Generating approach...</span>
+                              </div>
+                            ) : (
+                              <p className="text-gray-800 whitespace-pre-line">{problemItem.approach || "No approach added yet. Click 'Get Help' to generate one."}</p>
+                            )}
                           </div>
                         </div>
                         
-                        <a
-                          href={problem.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                          Visit Problem URL
-                        </a>
+                        <div className="flex justify-between items-center">
+                          <a
+                            href={problemItem.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Visit Problem URL
+                          </a>
+                          <button
+                            onClick={() => handleGetHelp(problemItem, index)}
+                            disabled={loading}
+                            className={`px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          >
+                            {loading ? 'Generating...' : 'Get Help'}
+                          </button>
+                        </div>
                       </Dialog.Content>
                     </Dialog.Portal>
                   </Dialog.Root>

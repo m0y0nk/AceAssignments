@@ -8,10 +8,9 @@ export default function RandomProblem() {
     
     return (
         <div>
-            <div>Random Problem</div>
             <div>
                 {randomProblem.map((problem) => (
-                    <div key={problem.id} className="p-1 m-2">
+                    <div key={problem.id} className="m-2">
                         <Problem problem={problem}/>
                     </div>
                 ))}
