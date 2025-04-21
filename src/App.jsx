@@ -37,7 +37,7 @@ function App() {
                   </ProblemProvider>
                 }
               />
-              <Route path="/goalsetter" element={<GoalSetPage />} />
+              <Route path="/add-event" element={<GoalSetPage />} />
               <Route
                 path="/add-question"
                 element={

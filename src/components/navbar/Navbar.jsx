@@ -35,10 +35,10 @@ export default function Navbar() {
               Tracker
             </Link>
             <Link
-              to="/goalsetter"
+              to="/add-event"
               className="text-gray-700 hover:text-blue-600 transition duration-200"
             >
-              Goal Setter
+              Add Event
             </Link>
           </div>
         </div>
