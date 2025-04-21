@@ -19,9 +19,9 @@ export default function RandomProblem() {
         </div>
       )}
 
-      {randomProblem.map((problem) => (
+      {randomProblem.map((problem, index) => (
         <div
-          key={problem.id}
+          key={index}
           className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
           onClick={() => handleClick(problem.title)}
         >

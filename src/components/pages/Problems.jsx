@@ -22,13 +22,7 @@ async function getApproach(problem) {
     Problem Description:
     ${problem.description || "No description provided"}
     
-    Please provide an approach to solve this problem in fewer lines. Include:
-    1. Understanding the problem
-    2. Breaking down the problem
-    3. Thought process for solving
-    4. Advice on avoiding common pitfalls/edge cases
-    5. Any additional tips or resources
-
+    Please provide an short approach to solve this problem in fewer lines. 
     Note: Don't write the code for the solution, just the approach.
     `;
 
@@ -48,13 +42,10 @@ async function getApproach(problem) {
 const ProblemPage = () => {
   const { problems, addProblem, updateProblem } = useContext(ProblemContext);
   
-  // Add local search state for the main page search field
   const [localSearchQuery, setLocalSearchQuery] = useState('');
-  // Add sort state
   const [sortBy, setSortBy] = useState('none');
   
   const filteredProblems = useMemo(() => {
-    // First filter by search query (now using localSearchQuery for the main page)
     let filtered = problems.filter((problem) =>
       problem.title.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
       problem.topic.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
@@ -62,7 +53,6 @@ const ProblemPage = () => {
       (problem.description && problem.description.toLowerCase().includes(localSearchQuery.toLowerCase()))
     );
     
-    // Then sort based on sortBy value
     if (sortBy === 'difficulty-asc') {
       const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
       filtered = [...filtered].sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
@@ -254,7 +244,6 @@ const ProblemPage = () => {
             Track and organize your coding problems, solutions, and approaches all in one place.
           </p>
 
-          {/* Search and Sort controls */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
             <div className="relative w-full sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -384,7 +373,7 @@ const ProblemPage = () => {
                                 <span className="ml-2">Generating approach...</span>
                               </div>
                             ) : (
-                              <p className="text-gray-800 whitespace-pre-line">{problemItem.approach || "No approach added yet. Click 'Get Help' to generate one."}</p>
+                              <p className="text-gray-800 whitespace-pre-line">{problemItem.approach || "No approach added yet. Click 'Get Help' to get Ai's Help."}</p>
                             )}
                           </div>
                         </div>
