@@ -1,4 +1,5 @@
 import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import { ProblemContext } from '../../context/ProblemContext';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -47,7 +48,6 @@ async function getApproach(problem) {
 
 const ProblemPage = () => {
   const { problems, addProblem, updateProblem } = useContext(ProblemContext);
-  const { searchQuery } = useContext(SearchQueryContext);
   
   // Add local search state for the main page search field
   const [localSearchQuery, setLocalSearchQuery] = useState('');
@@ -103,7 +103,16 @@ const ProblemPage = () => {
     setLocalSearchQuery(e.target.value);
   };
 
+  const handleSearchChange = (e) => {
+    setLocalSearchQuery(e.target.value);
+  };
+
   const handleSave = () => {
+    if (!problem.title.trim() || !problem.topic.trim() || !problem.description.trim()) {
+      alert("Please fill out the Title, Topic, and Description fields before saving.");
+      return;
+    }
+
     if (!problem.title.trim() || !problem.topic.trim() || !problem.description.trim()) {
       alert("Please fill out the Title, Topic, and Description fields before saving.");
       return;
@@ -134,6 +143,10 @@ const ProblemPage = () => {
       console.error('Error fetching approach:', error);
       setLoading(false);
     }
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
   };
 
   const handleSortChange = (e) => {
@@ -217,6 +230,7 @@ const ProblemPage = () => {
                         onChange={handleInputChange}
                         placeholder="Describe your problem here..."
                         className="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        className="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       />
                     </div>
                     <div>
@@ -292,6 +306,43 @@ const ProblemPage = () => {
             </div>
           </div>
 
+          {/* Search and Sort controls */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+            <div className="relative w-full sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={localSearchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search problems..."
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+            </div>
+            
+            <div className="relative w-full sm:w-auto">
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="bg-white border border-gray-300 text-gray-700 py-2 pl-3 pr-10 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-auto"
+              >
+                <option value="none">Sort by</option>
+                <option value="difficulty-asc">Difficulty (Easy → Hard)</option>
+                <option value="difficulty-desc">Difficulty (Hard → Easy)</option>
+                <option value="topic-asc">Topic (A → Z)</option>
+                <option value="topic-desc">Topic (Z → A)</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <div>
             {problems.length === 0 ? (
               <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl">
@@ -309,8 +360,17 @@ const ProblemPage = () => {
                 <h3 className="mt-2 text-lg font-medium text-gray-900">No matching problems</h3>
                 <p className="mt-1 text-gray-500">Try adjusting your search query</p>
               </div>
+            ) : filteredProblems.length === 0 ? (
+              <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 className="mt-2 text-lg font-medium text-gray-900">No matching problems</h3>
+                <p className="mt-1 text-gray-500">Try adjusting your search query</p>
+              </div>
             ) : (
               <ul className="space-y-3">
+                {filteredProblems.map((problemItem, index) => (
                 {filteredProblems.map((problemItem, index) => (
                   <Dialog.Root key={index}>
                     <Dialog.Trigger asChild>
