@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import SearchBar from "./SearchBar.jsx";
+import SearchQueryProvider from "../../context/SearchQuery.jsx";
 import './Navbar.css';
 // import Logo from "../logo/Logo";
 
@@ -15,7 +16,9 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-8">
           <div className="">
-              <SearchBar />
+              <SearchQueryProvider>
+                <SearchBar />
+              </SearchQueryProvider>
           </div>
 
           <div className="flex space-x-6 text-lg font-medium">

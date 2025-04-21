@@ -5,7 +5,7 @@ export default function ComplRate() {
     const { numQuestionsPerTopic } = useContext(ProblemContext);
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif", maxHeight: "400px", overflowY: "auto" }}>
             <ul style={{ listStyleType: "none", padding: 0 }}>
                 {
                     Object.keys(numQuestionsPerTopic).map((topic, index) => (
@@ -24,10 +24,10 @@ export default function ComplRate() {
                         >
                           <span style={{ fontWeight: "bold", fontSize: "16px" }}>{topic}</span>
                           <span style={{ fontSize: "14px", color: "#388E3C" }}>
-                            {numQuestionsPerTopic[topic]} {numQuestionsPerTopic[topic] ? "question" : "questions" }
+                            {numQuestionsPerTopic[topic]} {numQuestionsPerTopic[topic] === 1 ? "question" : "questions"}
                           </span>
                         </li>
-                      ))
+                    ))
                 }
             </ul>
         </div>

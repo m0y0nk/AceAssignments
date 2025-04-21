@@ -1,54 +1,57 @@
-import { useState } from 'react'
-import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import ProblemProvider from './context/ProblemContext'
-import Navbar from './components/navbar/Navbar'
-import LandingPage from './components/pages/Landing'
-import ProblemPage from './components/pages/Problems'
-import TrackerPage from './components/pages/Tracker'
-import GoalSetPage from './components/pages/GoalSet'
-import AddQuestionPage from './helper/AddQuestionPage'
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProblemProvider from './context/ProblemContext';
+import SearchQueryProvider from './context/SearchQuery';
+import Navbar from './components/navbar/Navbar';
+import LandingPage from './components/pages/Landing';
+import ProblemPage from './components/pages/Problems';
+import TrackerPage from './components/pages/Tracker';
+import GoalSetPage from './components/pages/GoalSet';
+import AddQuestionPage from './helper/AddQuestionPage';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <ThemeProvider>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={<LandingPage />}
-          />
-          <Route
-            path="/problems"
-            element={
-              <ProblemProvider>
-                <ProblemPage />
-              </ProblemProvider>
-            }
-          />
-          <Route
-            exact
-            path="/tracker"
-            element={<TrackerPage />}
-          />
-          <Route
-            exact
-            path="/goalsetter"
-            element={<GoalSetPage />}
-          />
-          <Route
-          exact
-          path="/add-question"
-          element={<AddQuestionPage />}
-        />
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <div className="container mx-auto px-4 py-6">
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route
+                path="/problems"
+                element={
+                  <ProblemProvider>
+                    <SearchQueryProvider>
+                      <ProblemPage />
+                    </SearchQueryProvider>
+                  </ProblemProvider>
+                }
+              />
+              <Route
+                path="/tracker"
+                element={
+                  <ProblemProvider>
+                    <TrackerPage />
+                  </ProblemProvider>
+                }
+              />
+              <Route path="/goalsetter" element={<GoalSetPage />} />
+              <Route
+                path="/add-question"
+                element={
+                  <ProblemProvider>
+                    <AddQuestionPage />
+                  </ProblemProvider>
+                }
+              />
+            </Routes>
+          </div>
+        </div>
       </Router>
-    </>
-  )
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
