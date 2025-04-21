@@ -59,7 +59,7 @@ npm run dev
 
 5. **Open the application:**
 
-[[http://localhost:5173](http://localhost:5173)](https://ace-assignments.vercel.app/)
+(https://ace-assignments.vercel.app/)
 
 ---
 
