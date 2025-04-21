@@ -9,10 +9,10 @@ AceAssignments is a React-based web application designed to help users track, ma
 
 ## 📌 Features
 
-- **Random Problem of the Day**: Displays a random problem to solve, with the ability to expand for more details.
+- **Random Problem of the Day**: Displays a random problem to solve every time the website is reloaded from the problems data pool that you create.
 - **Assignment Calendar**: A calendar view to track and manage assignments and events.
-- **Completion Rate Tracker**: Visualizes the completion rate of topics and assignments.
-- **Problem Tracker**: Add, edit, and manage problems with details like title, topic, difficulty, and description.
+- **Topics Monitoring**: Visualizes the completion rate of topics with respect to number of questions for the particular topic.
+- **Problem Tracker**: Add and manage problems with details like title, topic, subject, difficulty, approach and description.
 - **AI-Powered Suggestions**: Generate problem-solving approaches using Google GenAI.
 - **Responsive Design**: Fully responsive and optimized for all devices.
 
@@ -101,9 +101,10 @@ AceAssignments/
    - Expand functionality to navigate to the tracker page.
 
 4. **Problem Tracker**
-   - Add, edit, and manage problems with:
+   - Add, and manage problems with:
      - Title
      - Topic
+     - Subject
      - Difficulty
      - Description
      - Approach
@@ -130,3 +131,9 @@ AceAssignments/
 - **@google/genai**: AI-powered suggestions integration.
 
 ---
+
+## Future Plans
+
+- Building a database optimised for tracking and storing problems.
+- Implementing a edit functionality for problem
+- Creating a notification system so that you can create your assignments and not miss deadlines.
