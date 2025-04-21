@@ -12,7 +12,7 @@ export default function RandomProblem() {
   };
 
   return (
-    <div className="max-h-64 space-y-4">
+    <div className="max-h-64 space-y-4"  style={{ padding: "20px", fontFamily: "Arial, sans-serif", maxHeight: "400px", overflowY: "auto" }}>
       {infoMessage && (
         <div className="p-3 bg-blue-100 text-blue-800 rounded-lg shadow-sm">
           {infoMessage}
