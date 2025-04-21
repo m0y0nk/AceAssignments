@@ -14,7 +14,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="flex items-center space-x-8">
+        <div className="md:flex hidden items-center space-x-8">
           <div className="flex space-x-6 text-lg font-medium">
             <Link
               to="/"
@@ -41,6 +41,61 @@ export default function Navbar() {
               Add Event
             </Link>
           </div>
+        </div>
+
+        <div className="md:hidden flex items-center">
+          <button
+            className="text-gray-700 hover:text-blue-600 transition duration-200 focus:outline-none"
+            onClick={() => {
+              const menu = document.getElementById("mobile-menu");
+              menu.classList.toggle("hidden");
+            }}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div
+          id="mobile-menu"
+          className="hidden flex flex-col space-y-4 mt-4 text-lg font-medium md:hidden"
+        >
+          <Link
+            to="/"
+            className="text-gray-700 hover:text-blue-600 transition duration-200"
+          >
+            Home
+          </Link>
+          <Link
+            to="/problems"
+            className="text-gray-700 hover:text-blue-600 transition duration-200"
+          >
+            Problems
+          </Link>
+          <Link
+            to="/tracker"
+            className="text-gray-700 hover:text-blue-600 transition duration-200"
+          >
+            Tracker
+          </Link>
+          <Link
+            to="/add-event"
+            className="text-gray-700 hover:text-blue-600 transition duration-200"
+          >
+            Add Event
+          </Link>
         </div>
       </nav>
     </>
