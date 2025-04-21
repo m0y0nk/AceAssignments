@@ -3,8 +3,6 @@ import { ProblemContext } from '../../context/ProblemContext';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { GoogleGenAI } from "@google/genai";
-import SearchQueryProvider, { SearchQueryContext } from '../../context/SearchQuery';
-import SearchBar from '../navbar/SearchBar';
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
@@ -159,9 +157,6 @@ const ProblemPage = () => {
                 <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
                 <Dialog.Content className="fixed bg-white p-8 rounded-xl shadow-xl z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg max-h-[90vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-6">
-                    <SearchQueryProvider>
-                      <SearchBar/>
-                    </SearchQueryProvider>
                     <Dialog.Title className="text-2xl font-bold text-gray-800">Add New Question</Dialog.Title>
                     <Dialog.Close asChild>
                       <button aria-label="Close" className="text-gray-500 hover:text-gray-700 rounded-full p-1 hover:bg-gray-100 transition-colors">

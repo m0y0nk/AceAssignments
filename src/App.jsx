@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProblemProvider from './context/ProblemContext';
-import SearchQueryProvider from './context/SearchQuery';
 import Navbar from './components/navbar/Navbar';
 import LandingPage from './components/pages/Landing';
 import ProblemPage from './components/pages/Problems';
@@ -23,9 +22,7 @@ function App() {
                 path="/problems"
                 element={
                   <ProblemProvider>
-                    <SearchQueryProvider>
-                      <ProblemPage />
-                    </SearchQueryProvider>
+                    <ProblemPage />
                   </ProblemProvider>
                 }
               />
